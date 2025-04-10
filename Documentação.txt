@@ -1,0 +1,138 @@
+## 1. Introdução
+###Descrição do Problema
+
+O mercado audiovisual brasileiro é regulamentado por diversas leis, instruções normativas e resoluções, que abrangem definições, prazos, requisitos técnicos e obrigações para produtores, distribuidores e exibidores de conteúdo. Porém, cidadãos, profissionais do setor e até mesmo servidores que lidam esporadicamente com esses normativos enfrentam dificuldade para localizar, de maneira rápida e direta, a resposta adequada em meio a uma variedade de documentos extensos e complexos.
+
+Atualmente, não existe um “dicionário” ou base centralizada que explique esses termos de forma clara e oriente o usuário sobre a fonte normativa correta para cada assunto. Assim, surgem problemas como:
+
+Perda de tempo na busca de informações;
+
+Dificuldade em interpretar a legislação infraconstitucional pertinente ao audiovisual;
+
+Aumento de consultas e demandas aos setores de atendimento ao cidadão nos órgãos reguladores.
+
+Incorrência de infrações involuntárias por parte do mercado regulado devido à má interpretação ou desconhecimento das normas.
+
+###Objetivos do Chatbot
+
+Fornecer respostas rápidas e confiáveis sobre os principais temas e definições presentes em instruções normativas e leis do setor de registro, regulação e fiscalização do audiovisual brasileiro.
+
+Auxiliar cidadãos e profissionais a entenderem onde encontrar, dentro dos normativos vigentes, cada resposta ou fundamentação legal.
+
+Reduzir o volume de consultas diretas aos órgãos reguladores, oferecendo um serviço de autoatendimento ágil, baseado em Inteligência Artificial.
+
+Centralizar a base de conhecimento em um repositório único, de forma organizada e com busca vetorial, tornando fácil a manutenção e atualização do conteúdo.
+
+## 2. Metodologia
+A solução proposta baseia-se na técnica de Retrieval-Augmented Generation (RAG), onde um modelo de Linguagem Natural (LLM) consulta primeiramente uma base de dados vetorial com documentos relevantes, para então gerar uma resposta contextualizada. A metodologia pode ser dividida em etapas:
+
+Coleta e Organização dos Documentos
+
+Reunir as instruções normativas, leis e resoluções mais relevantes sobre a regulamentação do audiovisual.
+
+Converter esses documentos para formato PDF ou texto (caso não estejam) e organizar em uma pasta para processamento.
+
+Carregamento e Segmentação dos Documentos
+
+Utilizar um loader específico (por exemplo, PyPDFLoader) para extrair o texto dos arquivos PDF.
+
+Dividir o texto em chunks (pedaços) menores, usando uma técnica de text splitter (como RecursiveCharacterTextSplitter) para otimizar a indexação e garantir melhor contexto na busca.
+
+Geração de Embeddings e Indexação Vetorial
+
+Aplicar um modelo de embeddings (como sentence-transformers/all-mpnet-base-v2 do Hugging Face) para representar cada trecho textual em um vetor de alta dimensão.
+
+Armazenar esses vetores em uma base de dados (por exemplo, Chroma ou FAISS), permitindo a busca semântica.
+
+Implementação do RAG
+
+Quando o usuário faz uma pergunta, primeiro o sistema gera o embedding da pergunta e realiza uma busca vetorial por similaridade na base.
+
+Recupera-se os trechos relevantes (chunks) mais próximos em significado.
+
+Esses trechos são concatenados para fornecer o contexto para o modelo de linguagem (ex.: GPT-4, GPT-3.5 ou outro LLM).
+
+O LLM então gera a resposta final, utilizando o contexto recuperado como referência, para aumentar a precisão e fundamentar a resposta.
+
+Interface e Fluxo de Perguntas
+
+Pode-se desenvolver uma interface em Streamlit, Gradio ou outro framework web para simplificar o uso.
+
+O usuário faz a pergunta em linguagem natural e recebe a resposta com base na busca nos documentos e na geração do LLM.
+
+
+## 3. Funcionamento
+### 3.1 Instruções de Uso
+
+O usuário acessa a aplicação web (por exemplo, via URL do Streamlit).
+
+Insere sua dúvida em linguagem natural, descrevendo o assunto que deseja pesquisar (ex.: “Qual instrução normativa detalha como obter um registro de obra brasileira?”).
+
+O chatbot realiza a busca semântica na base de PDFs, encontrando os trechos mais relevantes que possam conter a resposta.
+
+Esses trechos são agregados e enviados como contexto para o modelo de IA, que gera a resposta final, mencionando os pontos principais e, de preferência, indicando a localização aproximada (ex.: número e artigo da Instrução Normativa) que fundamenta a resposta.
+
+O usuário recebe a resposta e, caso queira, pode aprofundar sua consulta ou fazer novas perguntas.
+
+###3.2 Estrutura da Base de Conhecimento
+
+Documentos Fonte: PDFs das instruções normativas e leis regulam o mercado audiovisual.
+
+Chunks: Cada PDF é fracionado em blocos textuais de tamanho ajustável (por exemplo, 800 tokens) para otimizar a indexação.
+
+Índice Vetorial: Cada chunk é convertido em um embedding e armazenado em uma estrutura indexada pelo Chroma ou similar.
+
+###3.3 Limitações Conhecidas
+
+Atualização da Legislação: As leis e regulamentos podem ser alterados. É necessário atualizar a base de dados periodicamente com as normas vigentes e suas eventuais alterações ou revogações. Novas normas podem demorar a aparecer na página de instruções normativas. Leis, por sua própria natureza, não são disponibilizadas no site da instituição.
+
+Dependência do Modelo: Modelos de linguagem, mesmo com RAG, podem ocasionalmente gerar respostas imprecisas ou incompletas se não encontrarem contexto suficiente.
+
+Cobertura Documental: Se a base de dados não incluir um documento específico ou recente, a resposta do chatbot pode ficar incompleta, desatualizada ou ser inexistente.
+
+Custo de Execução: Utilizar modelos de linguagem na nuvem (como GPT-4) pode ter custo associado dependendo do volume de uso.
+No caso o modelo foi testado com a versão 4o-mini, mas os resultados foram péssimos. Apenas cerca de 10% das perguntas foram respondidas de forma apropriada. Então mudamos o modelo utilizado para o o3-mini que passou a apresentar resultados minimamente aceitáveis, mas mesmo assim com uma taxa de erro de cerca de 40%, embora mesmo quando errado há algum mérito nas respostas erradas, ao contrário do modelo anterior que fornecia respostas totalmente inadequadas.
+
+##4. Resultados
+###Impacto Esperado no Ambiente Laboral
+
+Acesso Facilitado: Com um chatbot rápido e simples de usar, o cidadão comum e profissionais do setor podem localizar respostas para suas dúvidas sem precisar ler documentos extensos.
+
+Redução de Demandas Repetitivas: Órgãos reguladores tendem a receber menos consultas telefônicas ou presenciais sobre questões recorrentes de definição ou interpretação de instruções normativas.
+
+Melhor Compreensão Legal: O cidadão desenvolve maior clareza sobre onde encontrar as respostas formais (por exemplo, artigos específicos da lei), fomentando transparência e segurança jurídica.
+
+Economia de Tempo: Servidores e atendentes podem se dedicar a tarefas mais complexas, uma vez que o chatbot lida com dúvidas básicas e frequentes.
+
+
+
+## Comentários após a realização da atividade.
+
+A construção do chatbot com RAG utilizando streamlit e langchain se mostrou um grande desafio. Embora tenha havido demonstração prática na aula utilizando essa mesma proposta, o caso concreto real se mostrou muito mais desafiador. Construir o chatbot para que funcionasse localmente foi difícil mesmo utilizando ferramentas de geração de código. Incompatibilidade de bibliotecas era o tipo de erro mais comum.
+Foi necessário selecionar as INs que seriam baixadas, já que algumas tratam de financiamento de obras, tema que não é do escopo da área de registro, fiscalização e regulação. Houve ajuda de determinada área técnica para dizer quais as INs mais relevantes. Em seguida foi necessário construir um algoritmo que fizesse o scrapping do conteúdo das páginas, levando em consideração a falta de uniformidade dos links das páginas e desconsiderando os textos tachados (trechos revogados) para não prejudicar a leitura posterior para o vector embbeding.
+Depois disso, algumas horas foram gastas tentando ajustar as saídas para respostas minimamente coerentes. Parâmetros como máximo de tokens, tom de resposta, chunks, overlap, e o próprio modelo utilizado foram ajustados. Também foi criado um vetor de ampliação de palavras de correspondências para prever a presença de siglas consolidadas no mercado, mas que não aparecem nos textos das INs, bem como palavras similares que tem o mesmo valor semântico. Aqui reside um ótimo ponto de melhoria futura para ajustar as repostas do modelo.
+Outro ponto de atenção de melhoria é a janela de memória de contexto. O modelo não está conseguindo reter um bom contexto entre os prompts sucessivos. Assim, se por exemplo no prompt é perguntando algo pedindo mais detalhes da última resposta, nem sempre ele entende que essa última resposta é o contexto para ser levado em conta.
+Também notei que a seleção de notas as INs incluindo as principais e as retificadoras (aquelas que revogam trechos ou modificam INs anteriores) não deveriam ter sido utilizadas. Uma vez que o texto das INs 'principais' já é a versão atualizada e consolidada após as mudanças que as INs posteriores causam, o texto da IN 'principal' é o correto e atualizado. Ao incluirmos também as INs modificadores, estamos dobrando a quantidade de vezes que esses termos aparecem e que o número da própria IN aparece. Assim, pela grande repetição, o LLM pensa que a IN modificadora é mais importante que a principal, citando-a preferencialmente ao invés da IN principal que é a completa e mais antiga.
+Além disso, o modelo está enfrentando problemas com termos chaves parecidos mas que fazem total diferença. Ele confunde distribuidora (empresa que disponibiliza os longa metragens para serem exibidos nas salas de cinema) com programadora (a empresa dona do canal de TV) com exibidor (sala ou complexo de cinema onde há a projeção). Ele também se confunde em conseguir encontrar alguns prazos e retorna valores que estão em alguma IN sem relação com a pergunta.
+
+Desafio seguinte foi conseguir fazer o que estava funcionando localmente funcionar num app na web. O ajuste de variáveis de ambiente e versões específicas a serem utilizadas no streamlit eu bastante trabalho. A biblioteca original utilizada para o armazenamento era baseada no chroma, que não foi suportado pela aplicação streamlit. Muito tempo depois conseguimos fazer as alterações para fazer funcionar com FAISS.
+
+*Conclusão:* com bastante tempo e dedicação, o chatbot tem futuro. Sua implementação real traria grandes ganhos à instituição e ajudaria a reduzir a assimetria de informações além de difundir as regras mais básicas que o mercado regulado deveria sempre seguir. Esta é uma solução que se bem preparada, tem aplicabilidade real traz grandes ganhos para a instituição. Há a demanda latente para esse serviço.
+
+
+
+Sugestões de perguntas:
+
+O que é uma obra brasileira independente?
+Como registrar minha obra?
+Quanto custa para tirar o ROE da minha obra?
+Quanto custa para obter um CRT de uma obra não publicitária?
+Quanto custa para obter um CRT de uma obra publicitária?
+Quais são as normas (INs) que tratam sobre obras publicitárias?
+Quando devo enviar informações de distribuição de obras em salas de cinema?
+O CPB de uma obra pode ser cancelado?
+Quem pode solicitar o registro de um CPB?
+O que faz um cana ser considerado direcionado para o público infantil?
+Posso ceder os direitos comerciais da minha obra brasileira independente para outrem?
+Quais as características de obras coproduzidas internacionalmente?
+
