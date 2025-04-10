@@ -161,8 +161,9 @@ def create_chain():
     """Cria a chain RAG com configurações personalizadas"""
     try:
         # Carrega variáveis de ambiente
-        load_dotenv()
-        openai_api_key = os.getenv("OPENAI_API_KEY")
+        #load_dotenv()
+        #openai_api_key = os.getenv("OPENAI_API_KEY")
+        openai_api_key = st.secrets["OPENAI_API_KEY"]
         
         if not openai_api_key:
             st.error("API Key da OpenAI não encontrada. Configure-a no arquivo .env")
