@@ -7,7 +7,8 @@ import re
 from dotenv import load_dotenv
 
 # LangChain e submódulos
-from langchain_community.vectorstores import Chroma
+#from langchain_community.vectorstores import Chroma
+from langchain.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
@@ -102,9 +103,10 @@ def create_retriever():
         
         # Carrega a base vetorial
         db_pasta = "db_vetorial"
-        vector_db = Chroma(
-            persist_directory=db_pasta,
-            embedding_function=embedding_engine
+        #vector_db = Chroma(
+            #persist_directory=db_pasta,
+            #embedding_function=embedding_engine
+        vector_db = FAISS.from_documents(text_chunks, embedding_engine)
         )
 
         # Função de filtragem personalizada
