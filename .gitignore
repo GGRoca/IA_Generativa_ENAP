@@ -1,0 +1,17 @@
+# Excluir arquivos temporários e de sistema
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Excluir arquivos sensíveis
+.env
+*.key
+*.pem
+
+# Excluir pastas específicas
+.ipynb_checkpoints/
+venv/
+__pycache__/
+Lista de Normas (INs, RDCs, Súmulas e Portarias) 6.10.xlsx
+Situação Problema.txt
+# Adicione outros arquivos/pastas que deseja excluir
