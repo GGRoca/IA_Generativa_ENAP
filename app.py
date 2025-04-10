@@ -106,8 +106,8 @@ def create_retriever():
         #vector_db = Chroma(
             #persist_directory=db_pasta,
             #embedding_function=embedding_engine
-        vector_db = FAISS.from_documents(text_chunks, embedding_engine
-        )
+        db_pasta = "db_vetorial"
+        vector_db = FAISS.load_local(db_pasta, embedding_engine)
 
         # Função de filtragem personalizada
         def filter_by_metadata_richness(docs):
