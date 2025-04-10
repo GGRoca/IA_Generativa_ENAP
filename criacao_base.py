@@ -11,7 +11,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 # Para embeddings e banco vetorial
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_community.vectorstores import Chroma
+from langchain.vectorstores import FAISS
 
 def criar_base_vetorial():
     """
@@ -85,11 +85,8 @@ def criar_base_vetorial():
     )
 
     db_pasta = "db_vetorial"  # Pasta de persistência do Chroma
-    vector_db = Chroma.from_documents(
-        documents=text_chunks,
-        embedding=embedding_engine,
-        persist_directory=db_pasta
-    )
+    vector_db = FAISS.from_documents(text_chunks, embedding_engine)
+    vector_db.save_local("db_vetorial")  # persiste os arquivos, como index.faiss
     # Em versões Chroma >= 0.4.x, persist() é automático
     # vector_db.persist()  # Se precisar, dependendo da sua versão
     print("Base vetorial criada.")
