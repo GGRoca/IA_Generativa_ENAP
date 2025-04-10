@@ -107,7 +107,8 @@ def create_retriever():
             #persist_directory=db_pasta,
             #embedding_function=embedding_engine
         db_pasta = "db_vetorial"
-        vector_db = FAISS.load_local(db_pasta, embedding_engine)
+        vector_db = FAISS.load_local("db_vetorial", embedding_engine, allow_dangerous_deserialization=True)
+
 
         # Função de filtragem personalizada
         def filter_by_metadata_richness(docs):
