@@ -14,6 +14,10 @@ Solução de IA para consulta de instruções normativas e regulamentações da 
 - 💬 Interface conversacional natural
 - 📊 Análise de contexto automatizada
 
+## 🔗📽️ Link para acessar o app
+ - https://iagenerativaenap-a3eu9mrcjys9jcrlqufxtx.streamlit.app/
+
+
 ## 📦 Pré-requisitos
 
 - Python 3.10+
